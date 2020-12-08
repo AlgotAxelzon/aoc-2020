@@ -24,22 +24,28 @@ def sol1():
     while True:
         acc, visited, pc = ex_op(instrs[pc], acc, visited, pc)
         if pc in visited:
-            return acc, visited[-1]
+            return acc, visited
 
 def sol2():
     _, change = sol1()
-    instrs = [parse_line(instr) for instr in input()]
-    acc = 0
-    visited = []
-    pc = 0
-    while True:
-        acc, visited, pc = ex_op(instrs[pc], acc, visited, pc)
-        if pc == change:
-            instrs[pc] = ['nop', instrs[pc][1]] 
-        if pc == len(instrs):
-            return acc, "ended correctly"
-        if pc in visited:
-            return acc, max(visited)
+    switch = ['nop', 'jmp']
+    for i in range(0,2):
+        for n in change:
+            instrs = [parse_line(instr) for instr in input()]
+            if instrs[n][0] != switch[i]:
+                continue
+            acc = 0
+            visited = []
+            pc = 0
+            while True:
+                acc, visited, pc = ex_op(instrs[pc], acc, visited, pc)
+                if pc == n:
+                    instrs[pc] = [switch[i-1], instrs[pc][1]] 
+                if pc == len(instrs):
+                    return acc, "ended correctly"
+                if pc in visited:
+                    break
+    return "only loops"
 
-print(sol1())
-print(sol2())
+print(sol1()[0])
+print(sol2()[0])
